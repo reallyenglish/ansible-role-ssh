@@ -1,0 +1,37 @@
+---
+# tasks file for ansible-role-ssh
+
+- include_vars: "{{ ansible_os_family }}.yml"
+
+- include: "install-{{ ansible_os_family }}.yml"
+
+- name: Create log directory
+  file:
+    path: "{{ ssh_log_dir }}"
+    mode: 0755
+    owner: "{{ ssh_user }}"
+    group: "{{ ssh_group }}"
+    state: directory
+  notify: Restart ssh
+
+- name: Create db directory
+  file:
+    path: "{{ ssh_db_dir }}"
+    mode: 0755
+    owner: "{{ ssh_user }}"
+    group: "{{ ssh_group }}"
+    state: directory
+  notify: Restart ssh
+
+- name: Create ssh.conf
+  template:
+    src: ssh.conf.j2
+    dest: "{{ ssh_conf_file }}"
+    validate: echo %s
+  notify: Restart ssh
+
+- name: Start ssh
+  service:
+    name: "{{ ssh_service }}"
+    enabled: true
+    state: started

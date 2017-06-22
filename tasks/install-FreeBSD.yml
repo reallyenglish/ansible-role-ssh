@@ -1,0 +1,6 @@
+---
+
+- name: Install ssh
+  pkgng:
+    name: ssh
+    state: present

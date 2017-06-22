@@ -1,0 +1,8 @@
+ssh_user: ssh
+ssh_group: ssh
+ssh_log_dir: /var/log/ssh
+ssh_db_dir: "{{ __ssh_db_dir }}"
+ssh_service: ssh
+ssh_conf_dir: "{{ __ssh_conf_dir }}"
+ssh_conf_file: "{{ __ssh_conf_dir }}/ssh.conf"
+ssh_flags: ""
