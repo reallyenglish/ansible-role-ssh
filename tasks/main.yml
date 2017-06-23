@@ -3,35 +3,16 @@
 
 - include_vars: "{{ ansible_os_family }}.yml"
 
-- include: "install-{{ ansible_os_family }}.yml"
-
-- name: Create log directory
-  file:
-    path: "{{ ssh_log_dir }}"
-    mode: 0755
-    owner: "{{ ssh_user }}"
-    group: "{{ ssh_group }}"
-    state: directory
-  notify: Restart ssh
-
-- name: Create db directory
-  file:
-    path: "{{ ssh_db_dir }}"
-    mode: 0755
-    owner: "{{ ssh_user }}"
-    group: "{{ ssh_group }}"
-    state: directory
-  notify: Restart ssh
-
-- name: Create ssh.conf
+- name: Create ssh_config_file
   template:
-    src: ssh.conf.j2
-    dest: "{{ ssh_conf_file }}"
-    validate: echo %s
-  notify: Restart ssh
+    src: ssh_config.j2
+    dest: "{{ ssh_config_file }}"
+    backup: yes
+    #validate: echo %s
 
-- name: Start ssh
-  service:
-    name: "{{ ssh_service }}"
-    enabled: true
-    state: started
+- name: Manage ssh_known_hosts
+  known_hosts:
+    path: "{{ ssh_known_hosts_file }}"
+    name: "{{ item.name }}"
+    key: "{{ item.key }}"
+  with_items: "{{ ssh_known_hosts }}"
